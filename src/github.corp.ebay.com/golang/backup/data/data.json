@@ -1,0 +1,22 @@
+{
+  "workerNodes" : 4,
+  "mysql" : {
+    "mysql.user": "root",
+     "mysql.dbName" : [
+      {
+        "name":"foo"
+      },
+      {
+        "name":"bar"
+      },
+      {
+        "name":"foobar"
+      }
+     ]
+  },
+  "encryptonator": {
+    "encryptonator.user" : "",
+    "encryptonator.ssh_key":"",
+    "encryptonator.path":"/Users/tumapathy/test"
+  }
+}
