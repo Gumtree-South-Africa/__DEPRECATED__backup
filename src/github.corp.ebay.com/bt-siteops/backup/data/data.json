@@ -1,0 +1,32 @@
+{
+  "workerNodes": 4,
+  "data": {
+    "mongo": {
+      "mongo.host" : "localhost",
+      "mongo.port" : "27019",
+      "mongo.dbName": [
+      ]
+    },
+    "mysql": {
+      "mysql.user": "root",
+      "mysql.host" : "localhost",
+      "mysql.port" : "3306",
+      "mysql.dbName": [
+        {
+          "name": "foo"
+        },
+        {
+          "name": "bar"
+        },
+        {
+          "name": "foobar"
+        }
+      ]
+    }
+  },
+  "encryptonator": {
+    "encryptonator.user": "",
+    "encryptonator.ssh_key": "selva_test",
+    "encryptonator.path": "/Users/tumapathy/test"
+  }
+}
