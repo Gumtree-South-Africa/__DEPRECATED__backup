@@ -24,6 +24,7 @@ type Mysql struct {
 	DBList   []Feed `json:"mysql.dbName"`
 	Host     string `json:"mysql.host"`
 	Port     string `json:"mysql.port"`
+	PoolPath string `json:"mysql.zfspool"`
 }
 
 type Mongo struct {

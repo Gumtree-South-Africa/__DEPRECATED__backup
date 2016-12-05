@@ -11,6 +11,7 @@
       "mysql.user": "root",
       "mysql.host" : "localhost",
       "mysql.port" : "3306",
+      "mysql.zfspool" : "/tmp/",
       "mysql.dbName": [
         {
           "name": "foo"
@@ -25,8 +26,8 @@
     }
   },
   "encryptonator": {
-    "encryptonator.user": "",
-    "encryptonator.ssh_key": "selva_test",
-    "encryptonator.path": "/Users/tumapathy/test"
+    "encryptonator.user": "tumapathy@shellserver001.phx.ops.pp.bt.ecg.so:",
+    "encryptonator.ssh_key": "/Users/tumapathy/test/id_rsa",
+    "encryptonator.path": "~/"
   }
 }

@@ -46,12 +46,12 @@ func (w *Worker) Start(config *JSONInput) {
 				error := make(chan error, 1)
 				output := func() {
 					dest := config.Data.Mysql.dump(config.Data.Mysql.Host, config.Data.Mysql.Port,
-						config.Data.Mysql.Username, work.feed.Name, "/tmp/", error)
-					encryptedFile := config.Data.Mysql.encrypt(dest,config.Encryptonator.Path +
-						"/" + config.Encryptonator.SSHKey,error)
+						config.Data.Mysql.Username, work.feed.Name, config.Data.Mysql.PoolPath, error)
+					encryptedFile := config.Data.Mysql.encrypt(dest,config.Encryptonator.SSHKey,error)
 					log.Println(dest.FilePath, dest.FileName, encryptedFile)
 					config.Data.Mysql.rsync(encryptedFile.FilePath + encryptedFile.FileName,
-						config.Encryptonator.Path, error)
+						config.Encryptonator.Username + config.Encryptonator.Path,
+						config.Encryptonator.SSHKey, error)
 				}
 
 				output()
