@@ -10,18 +10,17 @@ type Input struct {
 	FileName string
 	FilePath string
 }
-type Feed struct {
+type MySqlDb struct {
 	Name string `json:"name"`
 }
 
-type Task struct {
-	feed Feed
-	dump DBDump
+type MongoDb struct {
+	Name string `json:"name"`
 }
 
 type Mysql struct {
 	Username string `json:"mysql.user"`
-	DBList   []Feed `json:"mysql.dbName"`
+	DBList   []MySqlDb `json:"mysql.dbName"`
 	Host     string `json:"mysql.host"`
 	Port     string `json:"mysql.port"`
 	PoolPath string `json:"mysql.zfspool"`
@@ -29,7 +28,7 @@ type Mysql struct {
 
 type Mongo struct {
 	Host    string `json:"mongo.host"`
-	DBList []Feed  `json:"mongo.dbName"`
+	DBList []MongoDb  `json:"mongo.dbName"`
 	Port    string `json:"mongo.port"`
 }
 
@@ -50,11 +49,13 @@ type JSONInput struct {
 	Encryptonator Encryptonator `json:"encryptonator"`
 }
 
+type Transfer interface {
+	rsync(destination string, errc chan error)
+	encrypt(sshKeyPath string, errc chan error) Input
+}
 
 type DBDump interface {
-	dump(host string, port string, username string, tableName string, destination string, errc chan error) Input
-	rsync(source string, destination string, errc chan error)
-	encrypt(inputFile Input, sshKeyPath string, errc chan error) Input
+	dump(host string, port string, username string, tableName string, destination string) (Input,error)
 }
 
 func RetrieveFeeds(dataFile string) (*JSONInput, error) {

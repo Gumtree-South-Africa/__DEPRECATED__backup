@@ -1,4 +1,4 @@
-package main
+ package main
 
 import (
 	"log"
@@ -33,20 +33,27 @@ func main() {
 	runtime.GOMAXPROCS(feeds.WorkerCnt)
 	WorkQueue := make(chan work.Job)
 	done := make(chan *bool, len(feeds.Data.Mysql.DBList))
-	var wg sync.WaitGroup
 	WorkerQueue := make(chan chan work.Job, feeds.WorkerCnt)
 
+	var wg sync.WaitGroup
 	//Start the workers
 	work.StartDispatcher(feeds, WorkQueue, WorkerQueue, feeds.WorkerCnt, done)
 	switch dbType {
 	case "mysql" :
-		wg.Add(len(feeds.Data.Mysql.DBList))
-
-		for _, feed := range feeds.Data.Mysql.DBList {
-			log.Println("Inside the db list loop", feed)
-			work.Generator(WorkQueue, feed, done, &wg)
-		}
-
+		addJob := func(feeds *work.JSONInput,wg *sync.WaitGroup) {
+				wg.Add(len(feeds.Data.Mysql.DBList))
+				for _, feed := range feeds.Data.Mysql.DBList {
+					log.Println("Inside the db list loop", feed)
+					data, err := feed.Dump(feeds.Data.Mysql.Host, feeds.Data.Mysql.Port,
+						feeds.Data.Mysql.Username,
+					feeds.Data.Mysql.PoolPath)
+					if err != nil {
+					log.Fatal("Error while dumping the mysql database ", feed.Name)
+					}
+					work.Generator(WorkQueue,&data,done,wg)
+				}
+			}
+		addJob(feeds,&wg)
 	case "mongo" :
 		//do nothing
 	}

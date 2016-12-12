@@ -1,4 +1,4 @@
-package work
+ package work
 
 import (
 	"log"
@@ -13,15 +13,14 @@ type Worker struct {
 }
 
 type Job struct {
-	feed Feed
+	input *Input
 	done chan *bool
-	wg   *sync.WaitGroup
+	wg *sync.WaitGroup
 }
 
 
-func Generator(workQueue chan Job, feed Feed, done chan *bool, wg *sync.WaitGroup) {
-	log.Println("Adding job to queue", feed)
-	workQueue <- Job{feed, done, wg}
+func Generator(workQueue chan Job, input *Input, done chan *bool,wg *sync.WaitGroup) {
+		workQueue <- Job{input,done,wg}
 }
 
 func NewWorker(id int, workerQueue chan chan Job) Worker {
@@ -44,22 +43,18 @@ func (w *Worker) Start(config *JSONInput) {
 			case work := <-w.Work:
 				// Receive a work request.
 				error := make(chan error, 1)
-				output := func() {
-					dest := config.Data.Mysql.dump(config.Data.Mysql.Host, config.Data.Mysql.Port,
-						config.Data.Mysql.Username, work.feed.Name, config.Data.Mysql.PoolPath, error)
-					encryptedFile := config.Data.Mysql.encrypt(dest,config.Encryptonator.SSHKey,error)
-					log.Println(dest.FilePath, dest.FileName, encryptedFile)
-					config.Data.Mysql.rsync(encryptedFile.FilePath + encryptedFile.FileName,
-						config.Encryptonator.Username + config.Encryptonator.Path,
+				output := func(work Job) {
+					encryptedFile := work.input.encrypt(config.Encryptonator.SSHKey,error)
+					log.Println(work.input.FilePath, work.input.FileName, encryptedFile)
+					encryptedFile.rsync(config.Encryptonator.Username + config.Encryptonator.Path,
 						config.Encryptonator.SSHKey, error)
+					work.wg.Done()
 				}
-
-				output()
+				go output(work)
 				err := <-error
 				if err != nil {
 					log.Fatal(err)
 				}
-				work.wg.Done()
 			case <-w.QuitChan:
 				// We have been asked to stop.
 				log.Println("worker%d stopping\n", w.ID)

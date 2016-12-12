@@ -26,8 +26,8 @@
     }
   },
   "encryptonator": {
-    "encryptonator.user": "tumapathy@shellserver001.phx.ops.pp.bt.ecg.so:",
+    "encryptonator.user": "tumapathy@phx:",
     "encryptonator.ssh_key": "/Users/tumapathy/test/id_rsa",
-    "encryptonator.path": "~/"
+    "encryptonator.path": "~/test"
   }
 }
