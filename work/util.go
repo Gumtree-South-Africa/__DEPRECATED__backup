@@ -9,7 +9,7 @@ import (
 func (Input Input) rsync(destination string, sshKey string, errc chan error) {
 	source := Input.FilePath + Input.FileName
 	if len(source) > 0 && len(destination) > 0 {
-		rsyncErr := utils.OsExecStdOut("rsync","","--progress","--remove-source-files","--bwlimit=50",
+		rsyncErr := utils.OsExecStdOut("rsync","","--progress","--remove-source-files","--bwlimit=8750",
 			"-azh","-e ssh",source,destination)
 		if rsyncErr != nil {
 			errc <- rsyncErr
